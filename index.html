@@ -1,27 +1,171 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>LOTweetR</title>
+
     <script src="jquery.js"></script>
     <script src="data_generator.js"></script>
+    <script src="moment.min.js"></script>
+
+    <!-- Bootstrap core CSS -->
+    <link href="bootstrap.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="sticky-footer.css" rel="stylesheet">
   </head>
+
   <body>
+    <!-- Wrap all page content here -->
+    <div id="wrap">
+
+      <div class="sidebar">
+        <div> 
+          <h3>Username</h3>
+        </div>
+
+        <div class="sidebar-tweets">
+          <p>tweets go here</p>
+        </div>
+
+      </div>
+
+      <div class="container">
+
+      <!-- Begin page content -->
+
+        <div class="page-header">
+          <h1><span class="h1-change">LO</span><span class="h1-black">Tweet</span><span class="h1-change">R</span></h1>
+            <input type="text" class="form-control" placeholder="What's new in middle earth?">
+        </div>
+
+        <div class="alert"></div>
+        
+        <div class="container tweets"></div>
+      </div>
+
+    </div>
+
     <script>
 
-      $(document).ready(function(){
-        var $body = $('body');
-        $body.html('');
+      var visitor = prompt("What is your Middle Earth name?", "SR. MEAGOL")
+      streams.users[visitor] = []
 
-        var index = streams.home.length - 1;
-        while(index >= 0){
-          var tweet = streams.home[index];
-          var $tweet = $('<div></div>');
-          $tweet.text('@' + tweet.user + ': ' + tweet.message);
-          $tweet.appendTo($body);
-          index -= 1;
+      $(document).ready(function(){
+        $("input").hide();
+        var displayedTweets = 0
+        var lastClickedUsername = undefined
+
+        var showNewTweets = function() {
+          var stopAtIndex = streams.home.length - 1
+          var index = displayedTweets;
+          while(index < stopAtIndex){
+            var tweet = streams.home[index];
+            var $tweet = $('<div class="lead"></div>');
+            $tweet.append("<span class='username'>" + '@' + tweet.user +'</span>' + ': ' + tweet.message + '<br>' + "<span class='timestamp'>" + moment(tweet.created_at).calendar() + "</span>")
+            $tweet.hide().prependTo($('.tweets')).fadeIn(1000)
+            index += 1;
+          }
+
+          displayedTweets = stopAtIndex;
+          if (lastClickedUsername) {
+            showUserTweets(lastClickedUsername);
+          }
+        };
+
+        var displayNewTweetsAlert = function() {
+          $(".alert").show(300);
+          var numberOfNewTweets = streams.home.length - displayedTweets
+          $(".alert").text(numberOfNewTweets + "+ new tweets")
+          updateTitleCount(numberOfNewTweets)
+          $(".alert").on("click", function() {
+              showNewTweets();
+              $("title").text("LOTweetR")
+            $(this).hide(200);
+          })
         }
+
+        var updateTitleCount = function(newTweets) {
+          $("title").text("(" + newTweets + ") " + "LOTweetR");
+        }
+
+        var showUserTweets = function(username) {
+          lastClickedUsername !== username && $("h3").text("@" + username).hide().fadeIn(200)
+          // console.log("hi");
+          $('.sidebar-tweets').html(' ')
+          var stopAtIndex = streams.users[username].length - 1
+          var index = 0;
+          while(index <= stopAtIndex){
+            var tweet = streams.users[username][index];
+            var $tweet = $('<div class="side-tweet"></div>');
+            $tweet.append(tweet.message + '<br>' + "<span class='sidebar-timestamp'>" + moment(tweet.created_at).calendar() + "</span>");
+            $tweet.hide().prependTo($('.sidebar-tweets')).fadeIn(1000)
+            index += 1;
+          }
+          $(".sidebar").show();
+        }
+
+        var createNewTweet = function() {
+          if ($("input").val()) {
+            writeTweet($("input").val())
+            $("input").val('')
+            $("input").css("border", "2px solid #8ABA84")
+            displayNewTweetsAlert();
+            setTimeout(function() {
+              $("input").css("border", "1px solid #cccccc")
+            }, 1500)
+          } else {
+            $("input").css("border", "2px solid #B22222")
+            setTimeout(function() {
+              $("input").css("border", "1px solid #cccccc")
+            }, 1500)
+          }
+        };
+        
+        $("body").delegate( ".username", "click", function() {
+          var name = $(this).text().replace('@', '');
+          showUserTweets(name);
+          lastClickedUsername = name
+        });
+
+        $(".page-header").on({
+          mouseenter: function() {
+            $(".h1-change").fadeTo(400, 0);
+            $("input").fadeIn(1000);
+          },
+          mouseleave: function() {
+            $("input").fadeOut(400);
+            $(".h1-change").delay(600).fadeTo(400, 1);
+          },
+        });
+
+        $(".h1-black").on("click", function() {
+          $("input").is(":visible") && createNewTweet();
+        })
+
+        $('input').keypress(function(e) {
+          if (e.which == 10 || e.which == 13) {
+            $("input").is(":visible") && createNewTweet();
+          }
+        });
+
+        $(".h1-black").hover(function() {
+          ($("input").val() && $("input").is(":visible")) && $(this).addClass("tweet-hover")
+        }, 
+        function() {
+          $(this).removeClass("tweet-hover")
+        });
+
+        showNewTweets();
+        setInterval(displayNewTweetsAlert, 7000)
 
       });
 
     </script>
   </body>
 </html>
+

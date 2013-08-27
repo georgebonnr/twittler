@@ -7,10 +7,10 @@
 window.streams = {};
 streams.home = [];
 streams.users = {};
-streams.users.boromir = [];
-streams.users.frodo = [];
-streams.users.bilbo = [];
-streams.users.legolas = [];
+streams.users.shawndrost = [];
+streams.users.sharksforcheap = [];
+streams.users.mracus = [];
+streams.users.douglascalhoun = [];
 window.users = Object.keys(streams.users);
 
 // utility function for adding tweets to our data structures
@@ -27,11 +27,11 @@ var randomElement = function(array){
 };
 
 // random tweet generator
-var opening = ['just', '', '', 'our ponies', 'legolas', 'ask me how i', 'sam', 'nearly', 'a stupid orc', 'swiftly', 'last night i', 'sauron', 'that wizard', 'that elf', 'a fat old hobbit'];
-var verbs = ['befell', 'traversed', 'fought', 'got', 'forged', 'built', 'attacked', 'experienced', 'fought off', 'forged', 'enjoyed', 'made', 'consumed', 'attacked', 'destroyed', 'bamboozled', 'made', 'rode', 'saw'];
-var objects = ['my', 'your', 'the', 'a', 'my', 'an entire', 'this', 'that', 'the', 'that ogre&#39;s', 'an elf&#39;s'];
-var nouns = ['magic ring', 'tiny army', 'tower', 'city', 'dragon', 'loincloth', 'potato', 'bad breath', 'stew', 'weapon', 'journey', 'bad decision', 'fate', 'life', 'pony', 'mind'];
-var tags = ['...without a magic ring', '#onering', '#hobbiton', 'but only i know how', '', '', '', '#omg', '#yolo', '#magic', '#onlyinmiddle_earth', '#bilbo_did_it_first', '', ''];
+var opening = ['just', '', '', '', '', 'ask me how i', 'completely', 'nearly', 'productively', 'efficiently', 'last night i', 'the president', 'that wizard', 'a ninja', 'a seedy old man'];
+var verbs = ['drank', 'drunk', 'deployed', 'got', 'developed', 'built', 'invented', 'experienced', 'fought off', 'hardened', 'enjoyed', 'developed', 'consumed', 'debunked', 'drugged', 'doped', 'made', 'wrote', 'saw'];
+var objects = ['my', 'your', 'the', 'a', 'my', 'an entire', 'this', 'that', 'the', 'the big', 'a new form of'];
+var nouns = ['cat', 'koolaid', 'system', 'city', 'worm', 'cloud', 'potato', 'money', 'way of life', 'belief system', 'security system', 'bad decision', 'future', 'life', 'pony', 'mind'];
+var tags = ['#techlife', '#burningman', '#sf', 'but only i know how', 'for real', '#sxsw', '#ballin', '#omg', '#yolo', '#magic', '', '', '', ''];
 
 var randomMessage = function(){
   return [randomElement(opening), randomElement(verbs), randomElement(objects), randomElement(nouns), randomElement(tags)].join(' ');
@@ -65,6 +65,5 @@ var writeTweet = function(message){
   var tweet = {};
   tweet.user = visitor;
   tweet.message = message;
-  tweet.created_at = new Date();
   addTweet(tweet);
 };
